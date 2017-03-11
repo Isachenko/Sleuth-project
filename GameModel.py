@@ -17,10 +17,10 @@ class GameModel:
         for i in range(self.players_number):
             self.cards.append(shuffled_deck[i*number_for_player: (i+1)*number_for_player])
 
-        self.cards_hiden = shuffled_deck[number_for_player*self.players_number:number_for_player*self.players_number+1]
+        self.cards_hidden = shuffled_deck[number_for_player*self.players_number:number_for_player*self.players_number+1]
         self.cards_open =shuffled_deck[number_for_player*self.players_number+1:]
 
 x = GameModel()
 print(x.cards)
 print(x.cards_open)
-print(x.cards_hiden)
+print(x.cards_hidden)

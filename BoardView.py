@@ -24,4 +24,5 @@ class BoardView(QtWidgets.QWidget):
         v_box.addLayout(hidden_cards_layout)
 
         self.setLayout(v_box)
+        self.setWindowTitle("Sleuth")
 
