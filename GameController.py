@@ -43,10 +43,12 @@ class GameController():
         if str.lower().startswith("player"):
             self.game_model.player_to_ask_choosen(str)
             self.update_tables_for_cur_player()
+            self.question_view.change_player_question_mode(True)
             self.update_views()
         else:
             question = str.split(" ")
             self.game_model.question_chosen(question)
+            self.question_view.change_player_question_mode(False)
             self.update_views()
 
     def update_views(self):
@@ -76,6 +78,8 @@ class GameController():
         for i, view in enumerate(self.player_views):
             if (i != self.game_model.current_turn_player):
                 view.update_tables(possible_variant[i+1], varian_numbers[i+1], total_number)
+
+
 
 
 

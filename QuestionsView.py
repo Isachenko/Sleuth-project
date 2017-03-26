@@ -41,6 +41,7 @@ class QuestionView(QtWidgets.QWidget):
         v_box.addLayout(layout)
 
         self.setLayout(v_box)
+        self.change_player_question_mode(True)
 
     def set_questions(self, questions):
         i = 0
@@ -58,6 +59,14 @@ class QuestionView(QtWidgets.QWidget):
                 button.hide()
             else:
                 button.show()
+
+    def change_player_question_mode(self, question=True):
+        for pl_num, button in self.players_buttons.items():
+            button.setDisabled(question)
+
+        for button in self.question_buttons:
+            button.setEnabled(question)
+
 
 
 
