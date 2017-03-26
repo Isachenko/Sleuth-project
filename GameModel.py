@@ -136,6 +136,33 @@ class GameModel:
     def updateModel(self):
         pass
 
+    def get_tips_for_cur_player(self):
+        tool_tips = {}
+        possible_players = [1, 2, 3]
+        possible_players.remove(self.current_turn_player + 1)
+        for q in self.players_questions[self.current_turn_player]:
+            question = ' '.join(q)
+            if len(q[0]) == 1: # 'do you have?' question
+                possible_answers = [True, False]
+                for player in possible_players:
+                    for has in possible_answers:
+                        tmp_states = self.kripke.apply_single_card_anouncment(player, has, q[0], q[1], just_test=True)
+                        n = self.kripke.get_possible_words_number(self.current_turn_player+1, self.cards[self.current_turn_player], tmp_states)
+                        key = (question, player, has)
+                        tool_tips[key] = n
+            else: # 'number of' question
+                possible_answers = [0, 1, 2]
+                prop = "colour"
+                value = q[1]
+                if (len(value) == 1):
+                    prop = "number"
+                for player in possible_players:
+                    for ans in possible_answers:
+                        tmp_states = self.kripke.apply_number_of_cards_anouncment(player, ans, prop, value, just_test=True)
+                        n = self.kripke.get_possible_words_number(self.current_turn_player+1, self.cards[self.current_turn_player], tmp_states)
+                        key = (question, player, ans)
+                        tool_tips[key] = n
+        return tool_tips
 
 
 
@@ -143,5 +170,6 @@ if __name__ == "__main__":
 
     x = GameModel()
 
-    print("players_questions")
-    print(x.players_questions)
+    tips = x.get_tips_for_cur_player()
+
+    p = 1

@@ -11,6 +11,7 @@ from PyQt5.QtCore import QObject, pyqtSlot
 class GameController():
 
     def __init__(self):
+        self.total_cur_words_n = 0
         self.app = QtWidgets.QApplication(sys.argv)
         self.game_model = GameModel()
 
@@ -32,6 +33,7 @@ class GameController():
 
         self.board_view = BoardView(self.player_views, self.open_view, self.hidden_view, self.question_view)
         self.update_tables_for_cur_player()
+        self.update_tips()
         self.update_views()
 
     def start(self):
@@ -45,6 +47,7 @@ class GameController():
             self.update_tables_for_cur_player()
             self.question_view.change_player_question_mode(True)
             self.update_views()
+            self.update_tips()
         else:
             question = str.split(" ")
             self.game_model.question_chosen(question)
@@ -74,10 +77,19 @@ class GameController():
 
     def update_tables_for_cur_player(self):
         possible_variant, varian_numbers, total_number = self.game_model.get_possible_states_for_cur_player()
+        self.total_cur_words_n = total_number
         self.hidden_view.update_tables(possible_variant[0], varian_numbers[0], total_number)
         for i, view in enumerate(self.player_views):
             if (i != self.game_model.current_turn_player):
                 view.update_tables(possible_variant[i+1], varian_numbers[i+1], total_number)
+
+    def update_tips(self):
+        tips = self.game_model.get_tips_for_cur_player()
+
+        players = [1,2,3]
+        players.remove(self.game_model.current_turn_player+1)
+
+        self.question_view.setTips(tips, players, self.total_cur_words_n)
 
 
 

@@ -21,6 +21,7 @@ class BoardView(QtWidgets.QWidget):
 
 
 
+
         v_box = QtWidgets.QVBoxLayout()
         v_box.addLayout(players_layout)
         v_box.addLayout(hidden_open_cards_layout)
@@ -32,4 +33,12 @@ class BoardView(QtWidgets.QWidget):
 
         self.setLayout(v_box)
         self.setWindowTitle("Sleuth")
+
+
+
+
+
+
+
+
 

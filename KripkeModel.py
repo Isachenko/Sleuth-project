@@ -110,17 +110,22 @@ class KripkeModel():
         return (positions, probobilities, total_number_of_words)
 
 
-    def apply_single_card_anouncment(self, player_n, has, number, colour):
+    def apply_single_card_anouncment(self, player_n, has, number, colour, just_test = False):
         card_n_1 = 1+(player_n-1)*2
         card_n_2 = 2+(player_n-1)*2
         if has:
-            self.states = [st for st in self.states if ((st[card_n_1][0] == number) and (st[card_n_1][1] == colour)) or \
+            tmp_states = [st for st in self.states if ((st[card_n_1][0] == number) and (st[card_n_1][1] == colour)) or \
                            ((st[card_n_2][0] == number) and (st[card_n_2][1] == colour))]
         else:
-            self.states = [st for st in self.states if not ((st[card_n_1][0] == number) and (st[card_n_1][1] == colour)) and \
+            tmp_states = [st for st in self.states if not ((st[card_n_1][0] == number) and (st[card_n_1][1] == colour)) and \
                            not ((st[card_n_2][0] == number) and (st[card_n_2][1] == colour))]
 
-    def apply_number_of_cards_anouncment(self, player_n, number, prop, value):
+        if not just_test:
+            self.states = tmp_states
+        else:
+            return tmp_states
+
+    def apply_number_of_cards_anouncment(self, player_n, number, prop, value, just_test = False):
         n_prop = 0 if prop == "number" else 1
         card_n_1 = 1+(player_n-1)*2
         card_n_2 = 2+(player_n-1)*2
@@ -133,7 +138,25 @@ class KripkeModel():
                 number_for_st += 1
             if (number_for_st == number):
                 good_st.append(st)
-        self.states = good_st
+        if not just_test:
+            self.states = good_st
+        else:
+            return good_st
+
+    def get_possible_words_number(self, known_player, known_player_cards, tmp_states):
+        known_card_n_1 = 1+(known_player-1)*2
+        known_card_n_2 = 2+(known_player-1)*2
+
+        known_tuple = [(known_player_cards[0][0], known_player_cards[0][1]), (known_player_cards[1][0], known_player_cards[1][1])]
+
+        total_number_of_words = 0
+        for st in tmp_states:
+            if (st[known_card_n_1] == known_tuple[0]) or (st[known_card_n_1] == known_tuple[1]):
+                if (st[known_card_n_2] == known_tuple[0]) or (st[known_card_n_2] == known_tuple[1]):
+                    total_number_of_words += 1
+
+        return total_number_of_words
+
 
 if __name__ == "__main__":
     x = [1,2]
