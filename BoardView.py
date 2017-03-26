@@ -7,10 +7,10 @@ class BoardView(QtWidgets.QWidget):
         super().__init__()
 
         players_layout = QtWidgets.QHBoxLayout()
-        players_layout.addStretch()
+        #players_layout.addStretch()
         for view in players_views:
             players_layout.addWidget(view)
-        players_layout.addStretch()
+        #players_layout.addStretch()
 
         hidden_open_cards_layout = QtWidgets.QHBoxLayout()
         hidden_open_cards_layout.addWidget(open_cards_view)

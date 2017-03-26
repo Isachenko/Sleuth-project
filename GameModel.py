@@ -2,7 +2,10 @@ from itertools import permutations
 from itertools import product
 import numpy as np
 from enum import Enum
+from KripkeModel import KripkeModel
 
+countable = {1: "1-st", 2: "2-nd", 3: "3-rd"}
+has_or_not = {True: "has", False: "hasn't"}
 
 class GameState(Enum):
     QUESTION_CHOOSING = 1
@@ -44,6 +47,8 @@ class GameModel:
 
         self.current_turn_player = 0
 
+        self.kripke = KripkeModel(self.players_number, deck, self.cards_open)
+
     def next_question_card(self):
         question_card = self.questions_deck_shuffled[self.question_index]
         self.question_index += 1
@@ -79,13 +84,55 @@ class GameModel:
 
     def player_to_ask_choosen(self, player):
         if self.game_state == GameState.PLAYER_TO_ASK_CHOOSING:
-            print(self.question_gonna_ask)
-            print(player)
+            #print(player + ", " + self.question_gonna_ask + "?")
+            pl_n = int(player[-1:])
+
+            if self.question_gonna_ask[0] == "number_of":
+                self.ask_number_of(pl_n, self.question_gonna_ask[1])
+            else:
+                self.ask_do_you_have(pl_n, self.question_gonna_ask)
 
             self.game_state = GameState.QUESTION_CHOOSING
             self.next_turn()
 
+    def ask_number_of(self, player, value):
+        print("How many " + value + " cards " + countable[player] + " player have?")
+        pl_n = player-1
+        player_cards = self.cards[pl_n]
 
+        #answer
+        number = 0
+        for card in player_cards:
+            if (str(card[0]) == value) or (str(card[1]) == value):
+                number += 1
+
+        print(countable[player] + " player has " + str(number) + " " + value + " cards.")
+
+        prop = "colour"
+        if (len(value) == 1):
+            prop = "number"
+
+        self.kripke.apply_number_of_cards_anouncment(player, number, prop, value)
+
+    def ask_do_you_have(self, player, card):
+        print("Does " + countable[player] + " player have (" + ' '.join(card) + ")?")
+        pl_n = player-1
+        player_cards = self.cards[pl_n]
+
+        #answer
+
+        has = False
+        for pl_card in player_cards:
+            if (card[0] == pl_card[0]) and (card[1] == pl_card[1]):
+                has = True
+
+        print(countable[player] + " player " + has_or_not[has] + " (" + ' '.join(card) + ")")
+        self.kripke.apply_single_card_anouncment(player, has, card[0], card[1])
+
+    def get_possible_states_for_cur_player(self):
+        player = self.current_turn_player
+        ans = self.kripke.get_possible_cards(player+1, self.cards[player])
+        return ans
 
     def updateModel(self):
         pass

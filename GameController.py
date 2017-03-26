@@ -31,6 +31,7 @@ class GameController():
         self.question_view.question_clicked.connect(self.question_button_clicked)
 
         self.board_view = BoardView(self.player_views, self.open_view, self.hidden_view, self.question_view)
+        self.update_tables_for_cur_player()
         self.update_views()
 
     def start(self):
@@ -41,6 +42,7 @@ class GameController():
     def question_button_clicked(self, str):
         if str.lower().startswith("player"):
             self.game_model.player_to_ask_choosen(str)
+            self.update_tables_for_cur_player()
             self.update_views()
         else:
             question = str.split(" ")
@@ -67,5 +69,14 @@ class GameController():
                 view.switch_to_open_view()
             else:
                 view.switch_to_hidden_view()
+
+    def update_tables_for_cur_player(self):
+        possible_variant = self.game_model.get_possible_states_for_cur_player()
+        self.hidden_view.update_tables(possible_variant[0])
+        for i, view in enumerate(self.player_views):
+            if (i != self.game_model.current_turn_player):
+                view.update_tables(possible_variant[i+1])
+
+
 
 
