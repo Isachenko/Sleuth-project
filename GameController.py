@@ -71,11 +71,11 @@ class GameController():
                 view.switch_to_hidden_view()
 
     def update_tables_for_cur_player(self):
-        possible_variant = self.game_model.get_possible_states_for_cur_player()
-        self.hidden_view.update_tables(possible_variant[0])
+        possible_variant, varian_numbers, total_number = self.game_model.get_possible_states_for_cur_player()
+        self.hidden_view.update_tables(possible_variant[0], varian_numbers[0], total_number)
         for i, view in enumerate(self.player_views):
             if (i != self.game_model.current_turn_player):
-                view.update_tables(possible_variant[i+1])
+                view.update_tables(possible_variant[i+1], varian_numbers[i+1], total_number)
 
 
 

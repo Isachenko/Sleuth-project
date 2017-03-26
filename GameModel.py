@@ -131,8 +131,7 @@ class GameModel:
 
     def get_possible_states_for_cur_player(self):
         player = self.current_turn_player
-        ans = self.kripke.get_possible_cards(player+1, self.cards[player])
-        return ans
+        return self.kripke.get_possible_cards(player+1, self.cards[player])
 
     def updateModel(self):
         pass

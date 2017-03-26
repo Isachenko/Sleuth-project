@@ -71,24 +71,43 @@ class KripkeModel():
 
     def get_possible_cards(self, known_player, known_player_cards):
         positions = {0: set(), 1: set(), 2: set(), 3: set()} # 0 = hidden card
+        probobilities = {0: {}, 1: {}, 2: {}, 3: {}} # 0 = hidden card
         known_card_n_1 = 1+(known_player-1)*2
         known_card_n_2 = 2+(known_player-1)*2
 
         known_tuple = [(known_player_cards[0][0], known_player_cards[0][1]), (known_player_cards[1][0], known_player_cards[1][1])]
 
+        total_number_of_words = 0
         for st in self.states:
             if (st[known_card_n_1] == known_tuple[0]) or (st[known_card_n_1] == known_tuple[1]):
                 if (st[known_card_n_2] == known_tuple[0]) or (st[known_card_n_2] == known_tuple[1]):
+                    total_number_of_words += 1
                     for key in positions.keys():
                         if key != known_player:
                             if key == 0: # hidden
-                                positions[0].add(st[0])
+                                if st[0] in positions[0]:
+                                    probobilities[0][st[0]] += 1
+                                else:
+                                    positions[0].add(st[0])
+                                    probobilities[0][st[0]] = 1
                             else:
+                                #add card 1
                                 unknown_card_n_1 = 1 + (key - 1) * 2
+                                if st[unknown_card_n_1] in positions[key]:
+                                    c = st[unknown_card_n_1]
+                                    probobilities[key][st[unknown_card_n_1]] += 1
+                                else:
+                                    positions[key].add(st[unknown_card_n_1])
+                                    probobilities[key][st[unknown_card_n_1]] = 1
+
+                                #add card 2
                                 unknown_card_n_2 = 2 + (key - 1) * 2
-                                positions[key].add(st[unknown_card_n_1])
-                                positions[key].add(st[unknown_card_n_2])
-        return positions
+                                if st[unknown_card_n_2] in positions[key]:
+                                    probobilities[key][st[unknown_card_n_2]] += 1
+                                else:
+                                    positions[key].add(st[unknown_card_n_2])
+                                    probobilities[key][st[unknown_card_n_2]] = 1
+        return (positions, probobilities, total_number_of_words)
 
 
     def apply_single_card_anouncment(self, player_n, has, number, colour):
