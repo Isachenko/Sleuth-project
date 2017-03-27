@@ -14,7 +14,7 @@ class QuestionView(QtWidgets.QWidget):
 
         layout = QtWidgets.QHBoxLayout()
         #layout.addStretch()
-        questions_label = QtWidgets.QLabel("Questins:")
+        questions_label = QtWidgets.QLabel("Questions:")
         layout.addWidget(questions_label)
         for i in range(questions_number):
             button = QtWidgets.QPushButton("question")
@@ -35,7 +35,7 @@ class QuestionView(QtWidgets.QWidget):
 
         selected_player_layout = QtWidgets.QHBoxLayout()
         #selected_player_layout.addStretch()
-        selected_player_label = QtWidgets.QLabel("Seletct player to ask")
+        selected_player_label = QtWidgets.QLabel("Select player to ask")
         selected_player_layout.addWidget(selected_player_label)
         self.players_buttons = dict()
         for i in range(players_number):
