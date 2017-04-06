@@ -19,17 +19,21 @@ class BoardView(QtWidgets.QWidget):
         current_player_questions_layout = QtWidgets.QHBoxLayout()
         current_player_questions_layout.addWidget(questions_view)
 
-
-
-
         v_box = QtWidgets.QVBoxLayout()
         v_box.addLayout(players_layout)
         v_box.addLayout(hidden_open_cards_layout)
         v_box.addLayout(current_player_questions_layout)
-        self.info_label = QtWidgets.QLabel("Info:")
-        v_box.addWidget(self.info_label)
-        v_box.addLayout(current_player_questions_layout)
 
+        self.info_label = QtWidgets.QLabel("Info:")
+        self.answer_label = QtWidgets.QLabel("Answer: you didn't yet ask anything")
+        self.next_turn_button = QtWidgets.QPushButton("Next player")
+        h_box = QtWidgets.QHBoxLayout()
+        h_box.addWidget(self.info_label)
+        h_box.addWidget(self.answer_label)
+        h_box.addWidget(self.next_turn_button)
+        v_box.addLayout(h_box)
+
+        v_box.addLayout(current_player_questions_layout)
 
         self.setLayout(v_box)
         self.setWindowTitle("Sleuth")

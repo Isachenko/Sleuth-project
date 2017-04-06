@@ -78,6 +78,13 @@ class QuestionView(QtWidgets.QWidget):
         for button in self.question_buttons:
             button.setEnabled(question)
 
+    def disable_all(self):
+        for pl_num, button in self.players_buttons.items():
+            button.setDisabled(True)
+
+        for button in self.question_buttons:
+            button.setDisabled(True)
+
     def setToolTips(self, tooltips):
         for buttons in self.question_buttons:
             key = buttons.text

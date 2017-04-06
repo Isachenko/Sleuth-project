@@ -29,25 +29,29 @@ class GameController():
         self.question_view = QuestionView(self.game_model.questions_in_hand_number, self.game_model.players_number)
         self.question_view.set_questions(self.game_model.players_questions[0])
 
-        self.question_view.question_clicked.connect(self.question_button_clicked)
-
         self.board_view = BoardView(self.player_views, self.open_view, self.hidden_view, self.question_view)
+
+        self.question_view.question_clicked.connect(self.question_button_clicked)
+        self.board_view.next_turn_button.clicked.connect(self.nex_player_button_clicked)
+
         self.update_tables_for_cur_player()
         self.update_tips()
         self.update_views()
+
+        self.board_view.next_turn_button.setDisabled(True)
 
     def start(self):
         self.board_view.show()
         sys.exit(self.app.exec_())
 
-
     def question_button_clicked(self, str):
         if str.lower().startswith("player"):
             self.game_model.player_to_ask_choosen(str)
             self.update_tables_for_cur_player()
-            self.question_view.change_player_question_mode(True)
+            self.question_view.disable_all()
             self.update_views()
             self.update_tips()
+            self.board_view.next_turn_button.setEnabled(True)
         else:
             question = str.split(" ")
             self.game_model.question_chosen(question)
@@ -57,16 +61,23 @@ class GameController():
     def update_views(self):
         self.question_view.set_questions(self.game_model.get_cuurent_player_questions())
         info_text = ""
+        answer_text = " "
         if self.game_model.game_state == GameState.PLAYER_TO_ASK_CHOOSING:
             question = ''.join(s+" " for s in self.game_model.question_gonna_ask)
             info_text = "Question is {}. Chose the player to ask".format(question)
         elif self.game_model.game_state == GameState.QUESTION_CHOOSING:
             self.question_view.hide_player_button_but_show_others(self.game_model.current_turn_player)
             info_text = "Chose the question to ask"
+        elif self.game_model.game_state == GameState.CURRENT_PLAYER_FINISHED:
+            info_text = "click 'Next turn' when u finished"
+            answer_text = self.game_model.last_answer
 
-        self.board_view.info_label.setText("Player {} turn: ".format(self.game_model.current_turn_player+1) + info_text)
+        self.board_view.info_label.setText("Player {} turn. ".format(self.game_model.current_turn_player+1) + info_text)
+        self.board_view.answer_label.setText(answer_text)
 
         self.update_hide_show_views()
+        self.update_tables_for_cur_player()
+
 
     def update_hide_show_views(self):
         for i, view in enumerate(self.player_views):
@@ -80,7 +91,7 @@ class GameController():
         self.total_cur_words_n = total_number
         self.hidden_view.update_tables(possible_variant[0], varian_numbers[0], total_number)
         for i, view in enumerate(self.player_views):
-            if (i != self.game_model.current_turn_player):
+            if i != self.game_model.current_turn_player:
                 view.update_tables(possible_variant[i+1], varian_numbers[i+1], total_number)
 
     def update_tips(self):
@@ -91,6 +102,13 @@ class GameController():
 
         self.question_view.setTips(tips, players, self.total_cur_words_n)
 
+    def nex_player_button_clicked(self):
+        self.game_model.next_turn()
+        self.game_model.start_turn()
+        self.update_views()
+        self.update_tips()
+        self.question_view.change_player_question_mode(True)
+        self.board_view.next_turn_button.setDisabled(True)
 
 
 

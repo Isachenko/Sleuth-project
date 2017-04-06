@@ -10,6 +10,8 @@ has_or_not = {True: "has", False: "hasn't"}
 class GameState(Enum):
     QUESTION_CHOOSING = 1
     PLAYER_TO_ASK_CHOOSING = 2
+    CURRENT_PLAYER_FINISHED = 3
+    WAITING_FOR_NEXT_PLAYER = 4
 
 
 class GameModel:
@@ -49,6 +51,8 @@ class GameModel:
 
         self.kripke = KripkeModel(self.players_number, deck, self.cards_open)
 
+        self.last_answer = ""
+
     def next_question_card(self):
         question_card = self.questions_deck_shuffled[self.question_index]
         self.question_index += 1
@@ -61,8 +65,14 @@ class GameModel:
         return self.players_questions[self.current_turn_player]
 
     def next_turn(self):
-        self.current_turn_player += 1
-        self.current_turn_player %= self.players_number
+        if self.game_state == GameState.CURRENT_PLAYER_FINISHED:
+            self.current_turn_player += 1
+            self.current_turn_player %= self.players_number
+            self.game_state = GameState.WAITING_FOR_NEXT_PLAYER
+
+    def start_turn(self):
+        if self.game_state == GameState.WAITING_FOR_NEXT_PLAYER:
+            self.game_state = GameState.QUESTION_CHOOSING
 
     def question_chosen(self, question):
 
@@ -92,8 +102,8 @@ class GameModel:
             else:
                 self.ask_do_you_have(pl_n, self.question_gonna_ask)
 
-            self.game_state = GameState.QUESTION_CHOOSING
-            self.next_turn()
+            self.game_state = GameState.CURRENT_PLAYER_FINISHED
+            #self.next_turn()
 
     def ask_number_of(self, player, value):
         print("How many " + value + " cards " + countable[player] + " player have?")
@@ -107,6 +117,7 @@ class GameModel:
                 number += 1
 
         print(countable[player] + " player has " + str(number) + " " + value + " cards.")
+        self.last_answer = countable[player] + " player has " + str(number) + " " + value + " cards."
 
         prop = "colour"
         if (len(value) == 1):
@@ -127,6 +138,7 @@ class GameModel:
                 has = True
 
         print(countable[player] + " player " + has_or_not[has] + " (" + ' '.join(card) + ")")
+        self.last_answer = countable[player] + " player " + has_or_not[has] + " (" + ' '.join(card) + ")"
         self.kripke.apply_single_card_anouncment(player, has, card[0], card[1])
 
     def get_possible_states_for_cur_player(self):
