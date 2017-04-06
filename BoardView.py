@@ -27,10 +27,13 @@ class BoardView(QtWidgets.QWidget):
         self.info_label = QtWidgets.QLabel("Info:")
         self.answer_label = QtWidgets.QLabel("Answer: you didn't yet ask anything")
         self.next_turn_button = QtWidgets.QPushButton("Next player")
+        self.restart_button = QtWidgets.QPushButton("Restart")
+        self.restart_button.hide()
         h_box = QtWidgets.QHBoxLayout()
         h_box.addWidget(self.info_label)
         h_box.addWidget(self.answer_label)
         h_box.addWidget(self.next_turn_button)
+        h_box.addWidget(self.restart_button)
         v_box.addLayout(h_box)
 
         v_box.addLayout(current_player_questions_layout)

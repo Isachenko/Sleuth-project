@@ -59,17 +59,18 @@ class PackView(QtWidgets.QWidget):
             w.show()
         self.table.hide()
 
-    def update_tables(self, possible_variant, varian_numbers, total_number):
+    def update_tables(self, possible_variant, variant_numbers, total_number):
         self.table.clearContents()
         for number, colour in possible_variant:
             i = int(number) - 1
             j = self.colour_to_j[colour]
-            varian_number = varian_numbers[(number, colour)]
+            variant_number = variant_numbers[(number, colour)]
             k = ""
-            if varian_number == total_number:
+            if variant_number == total_number:
                 k = " (K)"
-            item = QtWidgets.QTableWidgetItem(str(varian_number) + "/" + str(total_number) + k)
+            item = QtWidgets.QTableWidgetItem(str(variant_number) + "/" + str(total_number) + k)
             item.setBackground(self.colour_to_qt_colour[colour])
             item.setForeground(QtCore.Qt.white)
             self.table.setItem(i, j, item)
+
 
