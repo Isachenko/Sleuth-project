@@ -56,7 +56,8 @@ class GameController():
             question = str.split(" ")
             self.game_model.question_chosen(question)
             self.question_view.change_player_question_mode(False)
-            self.update_views()
+            #self.update_views()
+            #self.update_tips()
 
     def update_views(self):
         self.question_view.set_questions(self.game_model.get_cuurent_player_questions())
