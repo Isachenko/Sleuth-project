@@ -59,6 +59,11 @@ class PackView(QtWidgets.QWidget):
             w.show()
         self.table.hide()
 
+    def show_both(self):
+        for w in self.open_widgets:
+            w.show()
+        self.table.show()
+
     def update_tables(self, possible_variant, variant_numbers, total_number):
         self.table.clearContents()
         for number, colour in possible_variant:

@@ -103,6 +103,7 @@ class GameController():
 
         if (len(possible_variant[0]) == 1) and not self.already_won:
             self.already_won = True
+            self.hidden_view.show_both()
             self.board_view.restart_button.show()
             self.board_view.next_turn_button.hide()
             self.board_view.answer_label.hide()
